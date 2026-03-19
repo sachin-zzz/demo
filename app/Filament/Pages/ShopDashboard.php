@@ -6,6 +6,7 @@ use App\Enums\OrderStatus;
 use App\Filament\Widgets\CustomerGrowthChart;
 use App\Filament\Widgets\CustomerSegmentsChart;
 use App\Filament\Widgets\FlaggedOrders;
+use App\Filament\Widgets\LowStockAlert;
 use App\Filament\Widgets\OrdersYearOverYearChart;
 use App\Filament\Widgets\OrderValueDistributionChart;
 use App\Filament\Widgets\ProductMarginAnalysisChart;
@@ -70,6 +71,7 @@ class ShopDashboard extends BaseDashboard
             CustomerSegmentsChart::class,
             OrderValueDistributionChart::class,
             ProductMarginAnalysisChart::class,
+            LowStockAlert::class,
         ];
     }
 }
