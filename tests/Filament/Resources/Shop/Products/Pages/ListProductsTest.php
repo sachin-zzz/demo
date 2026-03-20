@@ -86,3 +86,29 @@ it('has query builder filter', function () {
     Livewire::test(ListProducts::class)
         ->assertTableFilterExists('queryBuilder');
 });
+
+it('shows product count summarizer on name column', function () {
+    Product::factory()->count(3)->create();
+
+    Livewire::test(ListProducts::class)
+        ->assertTableColumnSummarizerExists('name', 'count')
+        ->assertTableColumnSummarySet('name', 'count', 3);
+});
+
+it('shows average price summarizer on price column', function () {
+    Product::factory()->create(['price' => 100]);
+    Product::factory()->create(['price' => 200]);
+
+    Livewire::test(ListProducts::class)
+        ->assertTableColumnSummarizerExists('price', 'average')
+        ->assertTableColumnSummarySet('price', 'average', 150);
+});
+
+it('shows total stock summarizer on qty column', function () {
+    Product::factory()->create(['qty' => 10]);
+    Product::factory()->create(['qty' => 25]);
+
+    Livewire::test(ListProducts::class)
+        ->assertTableColumnSummarizerExists('qty', 'sum')
+        ->assertTableColumnSummarySet('qty', 'sum', 35);
+});
