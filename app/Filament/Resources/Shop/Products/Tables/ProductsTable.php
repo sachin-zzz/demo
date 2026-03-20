@@ -17,6 +17,9 @@ use Filament\Support\Enums\Width;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\SpatieMediaLibraryImageColumn;
+use Filament\Tables\Columns\Summarizers\Average;
+use Filament\Tables\Columns\Summarizers\Count;
+use Filament\Tables\Columns\Summarizers\Sum;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Enums\FiltersLayout;
 use Filament\Tables\Filters\QueryBuilder;
@@ -40,7 +43,8 @@ class ProductsTable
                 TextColumn::make('name')
                     ->searchable()
                     ->sortable()
-                    ->weight(FontWeight::Medium),
+                    ->weight(FontWeight::Medium)
+                    ->summarize(Count::make('count')),
 
                 TextColumn::make('brand.name')
                     ->searchable()
@@ -54,7 +58,8 @@ class ProductsTable
 
                 TextColumn::make('price')
                     ->searchable()
-                    ->sortable(),
+                    ->sortable()
+                    ->summarize(Average::make('average')->money('usd')),
 
                 TextColumn::make('sku')
                     ->label('SKU')
@@ -66,7 +71,8 @@ class ProductsTable
                     ->label('Quantity')
                     ->searchable()
                     ->sortable()
-                    ->toggleable(),
+                    ->toggleable()
+                    ->summarize(Sum::make('sum')),
 
                 TextColumn::make('security_stock')
                     ->searchable()
