@@ -5,6 +5,7 @@ namespace App\Filament\Pages;
 use App\Filament\Widgets\BudgetBurnRateChart;
 use App\Filament\Widgets\DepartmentLeaveLoadChart;
 use App\Filament\Widgets\ProjectHealthChart;
+use App\Filament\Widgets\UpcomingBirthdaysWidget;
 use App\Filament\Widgets\UtilizationRateChart;
 use App\Filament\Widgets\WorkforceInsightsStats;
 use BackedEnum;
@@ -25,6 +26,7 @@ class HrDashboard extends BaseDashboard
     {
         return [
             WorkforceInsightsStats::class,
+            UpcomingBirthdaysWidget::class,
             DepartmentLeaveLoadChart::class,
             ProjectHealthChart::class,
             UtilizationRateChart::class,
