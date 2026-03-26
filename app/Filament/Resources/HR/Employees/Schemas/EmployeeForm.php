@@ -116,6 +116,16 @@ class EmployeeForm
                                         EmploymentType::Intern->value,
                                     ])),
 
+                                TextInput::make('leave_allowance')
+                                    ->label('Annual Leave Allowance (days)')
+                                    ->numeric()
+                                    ->integer()
+                                    ->minValue(0)
+                                    ->maxValue(365)
+                                    ->default(20)
+                                    ->required()
+                                    ->suffix('days'),
+
                                 Toggle::make('is_active')
                                     ->label('Active')
                                     ->default(true)

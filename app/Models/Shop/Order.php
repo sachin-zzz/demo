@@ -35,11 +35,14 @@ class Order extends Model
         'shipping_price',
         'shipping_method',
         'notes',
+        'discount_applied',
     ];
 
     protected $casts = [
         'currency' => CurrencyCode::class,
         'status' => OrderStatus::class,
+        'discount_applied' => 'boolean',
+        'total_price' => 'decimal:2',
     ];
 
     /** @return MorphOne<OrderAddress, $this> */
