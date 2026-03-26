@@ -57,6 +57,12 @@ class EmployeeFactory extends Factory
                 'certification' => $this->faker->randomElement(['AWS Certified', 'PMP', 'Scrum Master', 'None']),
                 'office' => $this->faker->randomElement(['New York', 'San Francisco', 'London', 'Remote']),
             ],
+            'leave_allowance' => $this->faker->randomElement([
+                ...array_fill(0, 10, 5),
+                ...array_fill(0, 20, 10),
+                ...array_fill(0, 40, 15),
+                ...array_fill(0, 30, 20),
+            ]),
             'is_active' => $this->faker->boolean(90),
         ];
     }

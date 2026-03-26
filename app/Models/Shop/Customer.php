@@ -54,4 +54,10 @@ class Customer extends Model
     {
         return $this->hasManyThrough(Payment::class, Order::class, 'customer_id');
     }
+
+    /** @return HasMany<DiscountCode, $this> */
+    public function discountCodes(): HasMany
+    {
+        return $this->hasMany(DiscountCode::class);
+    }
 }

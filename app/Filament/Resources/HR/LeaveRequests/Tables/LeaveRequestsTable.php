@@ -20,6 +20,7 @@ use Filament\Tables\Columns\SelectColumn;
 use Filament\Tables\Columns\Summarizers\Sum;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
 
 class LeaveRequestsTable
@@ -54,12 +55,59 @@ class LeaveRequestsTable
                     ->sortable()
                     ->summarize(Sum::make()),
 
+                TextColumn::make('department_conflicts')
+                    ->label('Dept. Conflicts')
+                    ->badge()
+                    ->color('warning')
+                    ->icon(Heroicon::ExclamationTriangle)
+                    ->state(function (LeaveRequest $record): ?string {
+                        if ($record->employee === null || $record->employee->department_id === null) {
+                            return null;
+                        }
+
+                        $count = LeaveRequest::query()
+                            ->where('id', '!=', $record->id)
+                            ->whereIn('status', [LeaveStatus::Approved->value, LeaveStatus::Pending->value])
+                            ->whereHas('employee', fn (Builder $q) => $q->where('department_id', $record->employee->department_id))
+                            ->where(function (Builder $q) use ($record): void {
+                                $q->whereBetween('start_date', [$record->start_date, $record->end_date])
+                                    ->orWhereBetween('end_date', [$record->start_date, $record->end_date])
+                                    ->orWhere(function (Builder $q) use ($record): void {
+                                        $q->where('start_date', '<=', $record->start_date)
+                                            ->where('end_date', '>=', $record->end_date);
+                                    });
+                            })
+                            ->count();
+
+                        if ($count === 0) {
+                            return null;
+                        }
+
+                        $dept = $record->employee->department->name ?? 'dept';
+
+                        return "{$count} other" . ($count > 1 ? 's' : '') . " off in {$dept}";
+                    }),
+
                 TextColumn::make('approver.name')
                     ->toggleable()
                     ->toggledHiddenByDefault()
                     ->placeholder('Not assigned'),
             ])
             ->defaultSort('start_date', 'desc')
+            ->recordClasses(function (LeaveRequest $record): ?string {
+                if ($record->employee === null) {
+                    return null;
+                }
+
+                $usedDays = $record->employee->usedLeaveDaysThisYear();
+                $allowance = $record->employee->leave_allowance;
+
+                if ($usedDays >= $allowance) {
+                    return 'bg-danger-50 dark:bg-danger-950/50';
+                }
+
+                return null;
+            })
             ->recordActions([
                 ActionGroup::make([
                     Action::make('approve')

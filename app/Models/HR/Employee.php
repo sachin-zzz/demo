@@ -32,9 +32,18 @@ class Employee extends Model
         'metadata' => 'array',
         'salary' => 'decimal:2',
         'hourly_rate' => 'decimal:2',
+        'leave_allowance' => 'integer',
         'date_of_birth' => 'date',
         'hire_date' => 'date',
     ];
+
+    public function usedLeaveDaysThisYear(): float
+    {
+        return (float) $this->leaveRequests()
+            ->whereYear('start_date', now()->year)
+            ->whereIn('status', ['approved', 'taken'])
+            ->sum('days_requested');
+    }
 
     /** @return BelongsTo<Department, $this> */
     public function department(): BelongsTo
